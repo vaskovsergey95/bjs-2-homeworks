@@ -1,4 +1,4 @@
-class PrintEditionItem{
+class PrintEditionItem {
     constructor(name, releaseDate, pagesCount) {
         this.name = name;
         this.releaseDate = releaseDate;
@@ -6,27 +6,33 @@ class PrintEditionItem{
         this.state = 100;
         this.type = null;
     }
-    fix(){
+
+    fix() {
         this.state = this.state * 1.5;
         return this.state;
     }
+
     set state(num) {
-        if (num < 0) {
-            num = 0;
-        } else if (num > 0) {
-            num = 100;
-        } else num = this.state;
-        return this.states = num;
+        this.states = num;
+        if (this.state < 0) {
+            this.states = 0;
+        } else if (this.state > 100) {
+            this.states = 100;
+        } else {
+            this.states = this.state;
+        }
 
     }
+
     get state() {
         return this.states;
     }
 }
-class Magazine extends PrintEditionItem{
+
+class Magazine extends PrintEditionItem {
     constructor(name, releaseDate, pagesCount) {
         super(name, releaseDate, pagesCount);
-        this.type = "Magazine"
+        this.type = "magazine"
     }
 }
 
@@ -34,24 +40,27 @@ class Book extends PrintEditionItem {
     constructor(author, name, releaseDate, pagesCount) {
         super(name, releaseDate, pagesCount);
         this.type = "book";
-        this.name = author;
+        this.author = author;
 
 
     }
 }
+
 class NovelBook extends Book {
     constructor(author, name, releaseDate, pagesCount) {
         super(author, name, releaseDate, pagesCount);
         this.type = "novel";
     }
 }
-class FantasticBook  extends Book {
+
+class FantasticBook extends Book {
     constructor(author, name, releaseDate, pagesCount) {
         super(author, name, releaseDate, pagesCount);
         this.type = "fantastic";
     }
 }
-class DetectiveBook  extends Book {
+
+class DetectiveBook extends Book {
     constructor(author, name, releaseDate, pagesCount) {
         super(author, name, releaseDate, pagesCount);
         this.type = "detective";
@@ -70,7 +79,6 @@ sherlock.fix();
 console.log(sherlock.state); //100
 
 
-
 const arkadii = new FantasticBook(
     "Аркадий и Борис Стругацкие",
     "Пикник на обочине",
@@ -83,7 +91,6 @@ arkadii.state = 10;
 console.log(arkadii.state); //10
 arkadii.fix();
 console.log(arkadii.state); //15
-
 
 
 class Library extends PrintEditionItem {
@@ -111,15 +118,16 @@ class Library extends PrintEditionItem {
     }
 
     giveBookByName(bookName) {
-        for (let i = 0; i < this.books.length; i++) {
-            if (this.books[i].name === bookName) {
-                return this.books.splice(i, 1)[0];
+        for (let elem in this.books) {
+            if (this.books[elem].name === bookName) {
+                return this.books.splice(elem, 1)[0];
 
             }
-
         }
+        return null;
     }
 }
+
 const library = new Library("Библиотека имени Ленина");
 
 library.addBook(
@@ -148,3 +156,54 @@ console.log("Количество книг до выдачи: " + library.books.
 library.giveBookByName("Машина времени");
 console.log("Количество книг после выдачи: " + library.books.length); //Количество книг после выдачи: 3
 
+
+class Student {
+    constructor(name) {
+        this.name = name;
+        this.grage = [];
+    }
+
+    addMark(num, marks) {
+        let subjects = [];
+        if (num >= 2 && num <= 5) {
+            subjects.push(marks, num);
+            return this.grage.push(subjects);
+        }
+    }
+
+    getAverageBySubject(arg) {
+        let result;
+        result = this.grage.filter(elem => elem[0].includes(arg)).map(elem => elem[1]).reduce((acc, i, idx, arr) => {
+            acc += i;
+            if (idx === arr.length - 1) {
+                return acc / arr.length;
+            }
+            return acc;
+        }, 0)
+        return result;
+    }
+
+    getAverage() {
+        let res;
+        res = this.grage.map(elem => elem[1]).reduce((acc, i, idx, arr) => {
+            acc += i;
+            if (idx === arr.length - 1) {
+                return acc / arr.length;
+            }
+            return acc;
+        }, 0)
+        return res;
+    }
+}
+
+const student = new Student("Олег Никифоров");
+
+student.addMark(5, "химия");
+student.addMark(5, "химия");
+student.addMark(5, "физика");
+student.addMark(4, "физика");
+student.addMark(6, "физика"); // Оценка не добавится, так как больше 5
+console.log(student.getAverageBySubject("физика")); // Средний балл по предмету физика 4.5
+console.log(student.getAverageBySubject("биология")); // Вернёт 0, так как по такому предмету нет никаких оценок.
+console.log(student.getAverage()); // Средний балл по всем предметам 4.75
+console.log(student.grage)
