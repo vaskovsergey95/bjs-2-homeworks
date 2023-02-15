@@ -198,6 +198,7 @@ class Student {
 
 const student = new Student("Олег Никифоров");
 
+
 student.addMark(5, "химия");
 student.addMark(5, "химия");
 student.addMark(5, "физика");
