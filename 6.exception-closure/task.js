@@ -16,36 +16,33 @@ function validateCount(number) {
     }
 }
 
-console.log(validateCount('888'));
-
-
 class Triangle {
     constructor(a, b, c) {
         this.a = a;
         this.b = b;
         this.c = c;
-        if (a > b + c || b > a + c || c > a + b) {
-            throw new Error('Треугольник с такими сторонами не существует')
+        if (a < b + c || b < a + c || c > a + b) {
+            throw new Error('Треугольник с такими сторонами не существует');
         }
     }
 
     get perimeter() {
-        this._perimeter = this.a + this.b + this.c;
-        return this._perimeter.toFixed(2)
+       let res = this.a + this.b + this.c;
+        res = res.toFixed(3)
+        return Number(res);
     }
 
     get area() {
         const p = (this.a + this.b + this.c) / 2;
-        this._area = (p * (p - this.a) * (p - this.b) * (p - this.c)) ** 0.5;
-        return this._area.toFixed(2)
+        let res = (p * (p - this.a) * (p - this.b) * (p - this.c)) ** 0.5;
+        res = res.toFixed(3)
+        return Number(res);
     }
-
-
 }
 
-function getTriangle (a, b, c) {
+function getTriangle (a,b,c) {
     try {
-        return new Triangle(a, b, c);
+        return new Triangle(a,b,c);
     } catch (error) {
         return {
             getArea: function () {
@@ -56,7 +53,7 @@ function getTriangle (a, b, c) {
             }
         }
     }
-
 }
-console.log(new Triangle(5,5,5).area);
-console.log(new Triangle(5,5,5).perimeter);
+
+console.log(getTriangle(5, 5,5).getPerimeter())
+console.log(getTriangle(5,0,5).getArea())
