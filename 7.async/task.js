@@ -1,26 +1,29 @@
 class AlarmClock {
-    constructor(alarmCollection, intervalId) {
+    constructor() {
         this.alarmCollection = [];
         this.intervalId = null;
     }
 
 
-    addClock(time, canCall, callback) {
-        if (time === undefined || canCall === undefined) {
+    addClock(time, callback, id) {
+        if (time === undefined || id === undefined) {
             throw new Error('Отсутствуют обязательные аргументы')
         }
         for (let elem in this.alarmCollection) {
             if (time === this.alarmCollection[elem].time) {
                 console.warn('Уже присутствует звонок на это же время')
+                return;
             }
         }
-        canCall = true;
-        return this.alarmCollection.push({canCall, time, callback})
+      let canCall = true;
+        let alarm = {canCall, time, callback}
+        return this.alarmCollection.push(alarm);
     }
 
 
     removeClock(time) {
-        return this.alarmCollection.filter(item => item.time !== time);
+        this.alarmCollection = this.alarmCollection.filter(item => item.time !== time);
+        return this.alarmCollection;
     }
 
 
@@ -28,40 +31,48 @@ class AlarmClock {
         return new Date().toTimeString().slice(0, 5);
     }
 
-    start(callback) {
-        if (!this.intervalId) {
-            return;
+    start() {
+        let checkClock = (clock) => {
+            let alarm = this.getCurrentFormattedTime();
+            if (clock.time === alarm) {
+                return clock.callback();
+            }
         }
-
-        setTimeout(() => {
-            this.alarmCollection.forEach((elem) => {
-                if (elem.time === this.getCurrentFormattedTime) {
-                    this.canCall = false;
-                    callback();
-                }
-                this.intervalId = callback();
-            });
-        }, 1000)
+        if (this.intervalId === null) {
+            this.intervalId = setInterval(() => {
+                this.alarmCollection.forEach(clock => checkClock(clock));
+            }, 1000);
+        }
     }
-
     stop() {
-        clearInterval();
-        this.intervalId = null;
-
+        if (this.intervalId !== null) {
+            clearInterval(this.intervalId);
+            this.intervalId = null;
+        }
     }
 
     resetAllCalls() {
-        this.alarmCollection.forEach((elem) => {
-            this.alarmCollection[elem].canCall = true;
-        })
+        this.alarmCollection.forEach(elem => this.alarmCollection.canCall = true)
+
 
     }
 
     clearAlarms() {
-        stop();
+        this.stop();
         this.alarmCollection = [];
     }
 
 }
 
 
+
+function test(){
+    let alarm = new AlarmClock();
+    alarm.addClock("00:20", () => console.log("Будильник 1"), 1);
+    alarm.addClock("00:20", () => console.log("Будильник 2"), 2);
+    alarm.addClock("00:21", () => console.log("Будильник 3"),3);
+    alarm.resetAllCalls();
+    alarm.start();
+}
+
+test();
